@@ -11,25 +11,16 @@ describe("policy_engine", () => {
 
   const program = anchor.workspace.PolicyEngine as Program<PolicyEngine>;
 
-  let user = Keypair.generate();
-  let allowListAccount = Keypair.generate();
+  const allowListAccount = Keypair.generate();
 
   before(async () => {
-    // Airdrop SOL to the user
-    const airdropSignature = await provider.connection.requestAirdrop(
-      user.publicKey,
-      2e9
-    );
-    await provider.connection.confirmTransaction(airdropSignature);
-
     // Create the AllowList account
     await program.methods
       .initialize()
       .accounts({
         allowList: allowListAccount.publicKey,
-        user: user.publicKey,
       })
-      .signers([allowListAccount, user])
+      .signers([allowListAccount])
       .rpc();
   });
 
@@ -40,9 +31,7 @@ describe("policy_engine", () => {
       .addToAllowList(newReceiver)
       .accounts({
         allowList: allowListAccount.publicKey,
-        user: user.publicKey,
       })
-      .signers([user])
       .rpc();
 
     let account = await program.account.allowList.fetch(
@@ -59,18 +48,14 @@ describe("policy_engine", () => {
       .addToAllowList(receiverToRemove)
       .accounts({
         allowList: allowListAccount.publicKey,
-        user: user.publicKey,
       })
-      .signers([user])
       .rpc();
 
     await program.methods
       .removeFromAllowList(receiverToRemove)
       .accounts({
         allowList: allowListAccount.publicKey,
-        user: user.publicKey,
       })
-      .signers([user])
       .rpc();
 
     let account = await program.account.allowList.fetch(
@@ -87,16 +72,13 @@ describe("policy_engine", () => {
       .addToAllowList(receiver)
       .accounts({
         allowList: allowListAccount.publicKey,
-        user: user.publicKey,
       })
-      .signers([user])
       .rpc();
 
     let isAllowed = await program.methods
       .isAllowed(receiver)
       .accounts({
         allowList: allowListAccount.publicKey,
-        user: user.publicKey,
       })
       .view();
 

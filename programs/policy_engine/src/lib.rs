@@ -34,11 +34,12 @@ pub mod policy_engine {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(init, payer = user, space = 8 + 32 * 10)]
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    #[account(init, payer = payer, space = 8 + 32 * 10)]
     pub allow_list: Account<'info, AllowList>,
-    /// CHECK: This is a user-provided account, safe to use.
-    #[account(mut, signer)]
-    pub user: AccountInfo<'info>,
+
     pub system_program: Program<'info, System>,
 }
 
@@ -47,16 +48,12 @@ pub struct ModifyAllowList<'info> {
     #[account(mut)]
     pub allow_list: Account<'info, AllowList>,
     /// CHECK: This is a user-provided account, safe to use.
-    #[account(signer)]
-    pub user: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 pub struct CheckAllowList<'info> {
     pub allow_list: Account<'info, AllowList>,
-    /// CHECK: This is a user-provided account, safe to use.
-    pub user: AccountInfo<'info>,
 }
 
 #[account]
