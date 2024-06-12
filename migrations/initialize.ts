@@ -29,11 +29,11 @@ const main = async () => {
     .signers([allowListAccount])
     .rpc();
 
-  let newReceiver = Keypair.generate().publicKey;
-  console.log({ newReceiver });
+  let newReceiver = Keypair.generate();
+  console.log({ pub: newReceiver.publicKey, sec: newReceiver.secretKey });
 
   await program.methods
-    .addToAllowList(newReceiver)
+    .addToAllowList(newReceiver.publicKey)
     .accounts({
       allowList: allowListAccount.publicKey,
     })
