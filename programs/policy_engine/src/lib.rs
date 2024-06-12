@@ -37,7 +37,7 @@ pub struct Initialize<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
 
-    #[account(init, payer = payer, space = 8 + 32 * 10)]
+    #[account(init, payer = payer, space = 8 + AllowList::LEN)]
     pub allow_list: Account<'info, AllowList>,
 
     pub system_program: Program<'info, System>,
@@ -63,5 +63,5 @@ pub struct AllowList {
 }
 
 impl AllowList {
-    const LEN: usize = 8 + 32 * 10; // Adjust size as needed
+    const LEN: usize = 4 + 32 * 10; // 8 for discriminator, 4 for vec len, 32 bytes for each Pubkey (10 Pubkeys)
 }

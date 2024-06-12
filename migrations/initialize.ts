@@ -15,7 +15,10 @@ const main = async () => {
   const program = new anchor.Program(idl, provider) as Program<PolicyEngine>;
 
   const allowListAccount = Keypair.generate();
-  console.log({ allowListAccount });
+  console.log({
+    pub: allowListAccount.publicKey,
+    sec: allowListAccount.secretKey,
+  });
 
   // Create the AllowList account
   await program.methods
@@ -27,6 +30,7 @@ const main = async () => {
     .rpc();
 
   let newReceiver = Keypair.generate().publicKey;
+  console.log({ newReceiver });
 
   await program.methods
     .addToAllowList(newReceiver)
